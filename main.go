@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/veandco/go-sdl2/sdl"
+	ttf "github.com/veandco/go-sdl2/ttf"
 )
 
 func main() {
@@ -14,6 +15,7 @@ func main() {
 		os.Exit(2)
 	}
 }
+
 func run() error {
 	err := sdl.Init(sdl.INIT_EVERYTHING)
 	if err != nil {
@@ -21,15 +23,54 @@ func run() error {
 	}
 	defer sdl.Quit()
 
-	w, r, err := sdl.CreateWindowAndRenderer(800, 800, sdl.WINDOW_SHOWN)
+	if err := ttf.Init(); err != nil {
+		return fmt.Errorf("could not initialize TTF: %v", err)
+	}
+	defer ttf.Quit()
+
+	w, r, err := sdl.CreateWindowAndRenderer(800, 600, sdl.WINDOW_SHOWN)
 	if err != nil {
-		return fmt.Errorf("could not create window and render: %v", err)
+		return fmt.Errorf("could not create window: %v", err)
 	}
 	defer w.Destroy()
 
-	_ = r
+	if err := drawTitle(r, "Flappy Gooo"); err != nil {
+		return fmt.Errorf("could not draw title: %v", err)
+	}
 
-	time.Sleep(5 * time.Second)
+	time.Sleep(3 * time.Second)
+
+	return nil
+
+}
+
+func drawTitle(r *sdl.Renderer, text string) error {
+	r.Clear()
+
+	f, err := ttf.OpenFont("res/fonts/Flappy.ttf", 20)
+	if err != nil {
+		return fmt.Errorf("could not load font: %v", err)
+	}
+	defer f.Close()
+
+	c := sdl.Color{R: 255, G: 100, B: 0, A: 255}
+	s, err := f.RenderUTF8Solid(text, c)
+	if err != nil {
+		return fmt.Errorf("could not render title: %v", err)
+	}
+	defer s.Free()
+
+	t, err := r.CreateTextureFromSurface(s)
+	if err != nil {
+		return fmt.Errorf("could not create texture: %v", err)
+	}
+	defer t.Destroy()
+
+	if err := r.Copy(t, nil, nil); err != nil {
+		return fmt.Errorf("could not copy texture: %v", err)
+	}
+
+	r.Present()
 
 	return nil
 }
