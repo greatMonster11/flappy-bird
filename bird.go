@@ -7,9 +7,13 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
+const gravity = 0.2
+
 type bird struct {
 	time     int
 	textures []*sdl.Texture
+
+	y, speed float64 // vertical control
 }
 
 func newBird(r *sdl.Renderer) (*bird, error) {
@@ -23,12 +27,19 @@ func newBird(r *sdl.Renderer) (*bird, error) {
 		textures = append(textures, texture)
 	}
 
-	return &bird{textures: textures}, nil
+	return &bird{textures: textures, y: 300}, nil
 }
 
 func (b *bird) paint(r *sdl.Renderer) error {
 	b.time++
-	rect := &sdl.Rect{X: 10, Y: 300 - 43/2, W: 50, H: 43}
+	b.y -= b.speed
+	if b.y < 0 {
+		b.speed = -b.speed
+		b.y = 0
+	}
+	b.speed += gravity
+
+	rect := &sdl.Rect{X: 10, Y: (600 - int32(b.y)) - 43/2, W: 50, H: 43}
 
 	i := b.time / 10 % len(b.textures)
 	if err := r.Copy(b.textures[i], nil, rect); err != nil {
