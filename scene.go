@@ -36,9 +36,10 @@ func newScene(r *sdl.Renderer) (*scene, error) {
 
 func (s *scene) run(ctx context.Context, r *sdl.Renderer) <-chan error {
 	errc := make(chan error)
+
 	go func() {
 		defer close(errc)
-		for range time.Tick(10 * time.Millisecond) {
+		for range time.Tick(100 * time.Millisecond) {
 			select {
 			case <-ctx.Done():
 				return
@@ -55,6 +56,7 @@ func (s *scene) run(ctx context.Context, r *sdl.Renderer) <-chan error {
 
 func (s *scene) paint(r *sdl.Renderer) error {
 	s.time++
+
 	r.Clear()
 
 	if err := r.Copy(s.bg, nil, nil); err != nil {
@@ -65,7 +67,6 @@ func (s *scene) paint(r *sdl.Renderer) error {
 
 	i := s.time / 10 % len(s.birds)
 	if err := r.Copy(s.birds[i], nil, rect); err != nil {
-
 		return fmt.Errorf("could not copy bird: %v", err)
 	}
 
