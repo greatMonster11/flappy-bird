@@ -7,7 +7,10 @@ import (
 	"github.com/veandco/go-sdl2/sdl"
 )
 
-const gravity = 0.2
+const (
+	gravity   = 0.2
+	jumpSpeed = -5
+)
 
 type bird struct {
 	time     int
@@ -46,6 +49,10 @@ func (b *bird) paint(r *sdl.Renderer) error {
 		return fmt.Errorf("could not copy background: %v", err)
 	}
 	return nil
+}
+
+func (b *bird) jump() {
+	b.speed = jumpSpeed
 }
 
 func (b *bird) destroy() {
