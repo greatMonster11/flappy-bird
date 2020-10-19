@@ -98,8 +98,6 @@ func (b *bird) destroy() {
 func (b *bird) touch(p *pipe) {
 	b.mu.Lock()
 	defer b.mu.Unlock()
-	p.mu.RLock()
-	defer p.mu.RUnlock()
 
 	if p.x > b.x+b.x { // too far right
 		return
