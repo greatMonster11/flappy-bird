@@ -21,4 +21,4 @@ You can find atlernative birds in there, so you can mod the game!
 
 The fonts are copied from https://github.com/deano2390/OpenFlappyBird.
 
-The birds are downloaded from [here](https://www.youtube.com/redirect?event=video_description&v=aYkxFbd6luY&redir_token=QUFFLUhqa3V0M05zcTFxUmxaekVKSXJTQmxUTWh3TnZKUXxBQ3Jtc0tuS0E2M0QwNUQ3X0ZPdDdZMENYNWQtd2lvQkpSNDhtZzgxZUpyNVptdFZVMDFGRHRYOEktYXVnVUFjdFpESTlZQmV2WnQ2bHBIcC10YThWWHlmTzd4SG1KWVQ0M3dHZnJJXy1sd1hOVlBvRnJnX2IzVQ%3D%3D&q=http%3A%2F%2Fopengameart.org%2Fcontent%2Ffree-game-asset-grumpy-flappy-bird-sprite-sheets)
+The birds are downloaded from [here](https://opengameart.org/content/free-game-asset-grumpy-flappy-bird-sprite-sheets)
