@@ -54,6 +54,7 @@ func (ps *pipes) paint(r *sdl.Renderer) error {
 	return nil
 }
 
+// this is a comment
 func (ps *pipes) touch(b *bird) {
 	ps.mu.RLock()
 	defer ps.mu.RUnlock()
