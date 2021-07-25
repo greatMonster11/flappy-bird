@@ -13,6 +13,8 @@ type scene struct {
 	bg    *sdl.Texture
 	bird  *bird
 	pipes *pipes
+	score *score
+	audio *audio
 }
 
 func newScene(r *sdl.Renderer) (*scene, error) {
@@ -31,7 +33,17 @@ func newScene(r *sdl.Renderer) (*scene, error) {
 		return nil, err
 	}
 
-	return &scene{bg: bg, bird: bird, pipes: pipes}, nil
+	score, err := newScore()
+	if err != nil {
+		return nil, err
+	}
+
+    audio, err := newAudio()
+	if err != nil {
+		return nil, err
+	}
+
+    return &scene{bg: bg, bird: bird, pipes: pipes, score: score, audio: audio}, nil
 }
 
 func (s *scene) run(events <-chan sdl.Event, r *sdl.Renderer) <-chan error {
@@ -40,6 +52,7 @@ func (s *scene) run(events <-chan sdl.Event, r *sdl.Renderer) <-chan error {
 	go func() {
 		defer close(errc)
 		tick := time.Tick(10 * time.Millisecond)
+		ping := time.Tick(1000 * time.Millisecond)
 		for {
 			select {
 			case e := <-events:
@@ -47,6 +60,8 @@ func (s *scene) run(events <-chan sdl.Event, r *sdl.Renderer) <-chan error {
 					return
 				}
 				// log.Printf("event: %T", e)
+            case <- ping:
+                s.score.update()
 			case <-tick:
 				s.update()
 				if s.bird.isDead() {
@@ -69,6 +84,7 @@ func (s *scene) handleEvent(event sdl.Event) bool {
 	case *sdl.QuitEvent:
 		return true
 	case *sdl.MouseButtonEvent:
+        s.audio.playJump()
 		s.bird.jump()
 	case *sdl.MouseMotionEvent, *sdl.WindowEvent, *sdl.TouchFingerEvent:
 		// do nothing
@@ -87,6 +103,7 @@ func (s *scene) update() {
 func (s *scene) restart() {
 	s.bird.restart()
 	s.pipes.restart()
+	s.score.restart()
 }
 
 func (s *scene) paint(r *sdl.Renderer) error {
@@ -104,6 +121,10 @@ func (s *scene) paint(r *sdl.Renderer) error {
 		return err
 	}
 
+	if err := s.score.paint(r); err != nil {
+		return err
+	}
+
 	defer r.Present()
 	return nil
 }
@@ -112,4 +133,5 @@ func (s *scene) destroy() {
 	s.bg.Destroy()
 	s.bird.destroy()
 	s.pipes.destroy()
+	s.score.destroy()
 }
